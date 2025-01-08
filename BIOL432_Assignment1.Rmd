@@ -1,0 +1,91 @@
+---
+title: "BIOL432_Assignment1"
+author: "Autumn Hodgins"
+date: "2025-01-08"
+output: html_document
+---
+#BIOL 432 Assignment 1
+
+This assignment can be found at my [GitHub repository](https://github.com/autumnhodgins/BIOL432_Assignment1).
+
+```{r}
+#Running dataGenerato.R to make a data frame with measurments of pigeon species.
+source("dataGenerato.R")
+
+#Running volumeEstimato.R to update the data frame with volume calculations.
+source("volumeEstimato.R")
+```
+
+Now I will load the data and sort it.
+
+```{r}
+#Load in the data from measurements.csv
+data <- read.csv("measurements.csv")
+
+#I will use head to check if the data looks correct
+head(data)
+
+#Load the dplyr library
+library(dplyr)
+
+#Sort the data, first by species, then by observer, then by limb volume
+data <- data %>% arrange(Organism, Observer, Volume)
+
+#I will use head to check if the data looks correct
+head(data)
+```
+
+Next, I will make a table showing the average limb volume for each species.
+
+```{r}
+#Calculating the average limb volume for each species
+avg_volume <- data %>% group_by(Organism) %>% summarise(Average_Volume = mean(Volume))
+
+#Loading the library knitr so that I can make a nice looking table
+library(knitr)
+
+#Making a table to display average limb volme by species
+kable(avg_volume, caption = "Average Volume by Species")
+```
+I will now make a table to display how many times each observer measured each species of bird.
+
+```{r}
+#Calculating how many entries exist for each observer with each species.
+observation_frequency <- data %>% group_by(Organism, Observer) %>% summarise(Observations = n())
+
+#Making a table to display observation frequencies.
+kable(observation_frequency, caption = "Observation Frequency")
+
+```
+I will now make a boxplot to display the distributions of limb volumes for each species of pigeon.
+
+```{r}
+#loading in ggplot2 for making the graphs
+library(ggplot2)
+
+ggplot(data, aes(x = Organism, y = Volume)) +
+  geom_boxplot() +
+  theme_light() +
+  labs(title = "Average Limb Volume by Species of Pigeon",
+       x = "Species of Pigeon",
+       y = bquote("Limb Volume (" ~ cm^3 ~ ")"))
+```
+Now I will make a multi-panel plot to show frequency histograms of the distribution of limb volume for each species.
+
+```{r}
+#Changing the limb volumes of my data to be in long data format so that they can be used for a multi-plot
+volume_long_data <- data %>% pivot_longer(cols = Volume,
+               names_to = "Measurement",
+               values_to = "Value")
+
+#Making a multi-panel plot to show the distributions of limb volume by species.
+ggplot(volume_long_data, aes(x = Value)) +
+  geom_histogram() +
+  facet_wrap(~Organism) +
+  theme_light() +
+  labs(title = "Frequency Distributions of Limb Volume of Pigeon Species",
+       x = bquote("Limb Volume (" ~ cm^3 ~ ")"),
+       y = "Frequency")
+```
+
+
