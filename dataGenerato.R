@@ -1,4 +1,3 @@
-install.packages("tidyverse")
 library(tidyverse)
 
 #Assignment 1 Script 1
@@ -28,7 +27,7 @@ measurements <- data.frame(
 #Writing this data frame to a csv file.
 write.csv(measurements, "measurements.csv", row.names = FALSE)
 
-#Checking the data with head
+#Checking the data with head.
 head(measurements)
 
 #The data frame looks correct.
