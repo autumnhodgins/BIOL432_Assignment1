@@ -70,6 +70,7 @@ ggplot(data, aes(x = Organism, y = Volume)) +
        x = "Species of Pigeon",
        y = bquote("Limb Volume (" ~ cm^3 ~ ")"))
 ```
+
 Now I will make a multi-panel plot to show frequency histograms of the distribution of limb volume for each species.
 
 ```{r}
